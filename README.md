@@ -27,13 +27,13 @@ Dziedzina obiektów: aplikacje mobilne na platformy Android i iOS
      dla Android - https://www.kaggle.com/lava18/google-play-store-apps
 
     Atrybuty:
-    1. platforma
-    2. kategoria 
-    3. cena
-    4. ocena uzytkownika
-    5. liczba ocen
-    6. minimalna wersja systemu
-    7. rozmiar aplikacji
+    1. platforma - iphone lub pixel
+    2. kategoria - wyswietlana całość ikony + podpis pod ikoną
+    3. cena - kolor ikony 
+    4. ocena uzytkownika - kolejność w wyswitlanej liscie
+    5. liczba ocen - wilkosc ikony w środku 
+    6. minimalna wersja systemu - dodatkowa notyfikacja w lewym gornym rogu kazdej calosci ikony
+    7. średni rozmiar aplikacji dla kategorii - wilkosc całej ikony
 
 
 Przechowywanie danych: JSON lub CSV
