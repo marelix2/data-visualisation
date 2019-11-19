@@ -1,41 +1,52 @@
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import PhoneBackgorund from './components/PhoneBackgorund'
+import utils from './utils'
+import {chunk} from 'lodash'
 import COLORS from './../../constants/colors'
 
-const drawIcon =(canvas, posX, posY)  => {
-
-     canvas.fillStyle = posX % 2 ? COLORS.ORANGE : COLORS.GREEN
-     canvas.fillRect( posX, posY, 55, 55)
-
-    canvas.fillStyle = '#000'
-    const img = new Image()
-
-    img.width=150
-    img.onload = () => {
-        canvas.drawImage(img,posX + 10,posY + 10, 35, 35)
-    } 
-    img.src=require('./../../dist/svg/earth.svg')
-
-    canvas.fillStyle = COLORS.TEXT_IPHONE
-    canvas.font='10px Roboto'
-    canvas.fillText('Kategoria',  7 + posX, 70 + posY)
-}
-
-const drawRow = (canvas, posX, posY) => {
-    ['', '', '', ''].map((el, index) => drawIcon(canvas, posX + index * 55 + index * 14, posY))
-}
-
-const fillBackbgorund = canvas => {
-    canvas.fillStyle = '#FF4E52'
-    canvas.fillRect(0,0,290,508);
-
-    canvas.fillStyle = COLORS.RED
-    canvas.fillRect(0,450,290,508);
-
+const styles = {
+    canvasWrapper : {
+        border:'1px solid #E9494C',
+     borderRadius: 3,
+      position: 'absolute',
+       left: 88,
+        top: 132
+    }
 }
 
  const IphoneDisplayer = ({phoneWidth, phoneHeight, backgorundFill}) => {
+
+    const items = [
+     {category: 'earth',
+        number:'33',
+        imgSrc: 'earth.svg',
+        width: '55',
+        height: '55',
+        color: COLORS.ORANGE_2},
+        {category: 'utils',
+        number:'24',
+        imgSrc: 'edit.svg'},
+        {category: 'utils',
+        number:'22',
+        imgSrc: 'feature.svg'},
+        {category: 'dev',
+        number:'1',
+        imgSrc: 'settings.svg',
+        width: '45',
+        height: '45'
+    },
+        {category: 'features',
+        number:'14',
+        imgSrc: 'console.svg',
+        width: '40',
+        height: '40',
+        color: COLORS.RED},
+        {category: 'utils',
+        number:'22',
+        imgSrc: 'earth.svg',
+        color: COLORS.ORANGE},
+    ]
 
     const [canvas, setCanvas] = useState(null)
      
@@ -45,12 +56,12 @@ const fillBackbgorund = canvas => {
 
      useEffect(() => {
         if(canvas) { 
-        fillBackbgorund(canvas)
-
-        drawRow(canvas, 14, 20)
-        drawRow(canvas, 14, 100)
-        drawRow(canvas, 14, 180)
-        drawRow(canvas, 14, 260)
+        utils.fillBackbgorund(canvas)
+        
+        const chunks = chunk(items, 4)
+            chunks.forEach((ch, index ) => {
+                utils.drawRow(canvas, ch,  14, utils.getIconPosYOffset(index))
+            })
         }
      }, [canvas])
 
@@ -65,7 +76,11 @@ const fillBackbgorund = canvas => {
             phoneHeight={phoneHeight}
             />
          </svg>
-         <canvas id='canvas' width='290' height='508' style={{border:'1px solid #E9494C', borderRadius: 3, position: 'absolute', left: 88, top: 132}}></canvas>
+         <canvas 
+         id='canvas'
+          width='290'
+           height='508'
+            style={styles.canvasWrapper} />
         </>
     )
 }
