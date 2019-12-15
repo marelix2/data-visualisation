@@ -25,11 +25,10 @@ const onEnd =  (err) => {
 }
 
 
-runScript('./parseAppleStoreData.js', onEnd );
-runScript('./parseGooglePlayData.js', onEnd );
+runScript('./parseAppleStoreData.js', () => runScript('./parseGooglePlayData.js',  writeToJSON ) );
 
-const androidData = require('./outAndroid.json')
-const iosData = require('./outIOS.json')
+
+
 
 const writeToJSON = () => {
 
@@ -44,6 +43,10 @@ const writeToJSON = () => {
   }
 
   const mergeData = () => {
+
+  const androidData = require('./outAndroid.json')
+  const iosData = require('./outIOS.json')
+
     const out = []
     const maxLength = androidData.length > iosData.length ? androidData.length: iosData.length
     for(let i = 0; i < maxLength; i++) {
@@ -53,4 +56,4 @@ const writeToJSON = () => {
     return out
   }
 
-  writeToJSON()
+ 

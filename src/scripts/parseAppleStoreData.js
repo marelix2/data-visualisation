@@ -34,12 +34,12 @@ fs.createReadStream(fetchedPath)
       clearedRow.price = row.price
       clearedRow.totalCountRating = row['rating_count_tot']
       clearedRow.userRating = row['user_rating']
-      clearedRow.category = row['prime_genre']
+      clearedRow.category =parseCategory(row['prime_genre'])
       clearedRow.environment = 'iOS'
-      clearedRow.numberOfSupportedDevices = row['sup_devices_num']
+      clearedRow.numberOfSupportedDevices = row['sup_devices_num'] || '36'
       clearedRow.size = row['size_bytes']
 
-      correctRows.push(clearedRow)
+     correctRows.push(clearedRow)
     }
     catch (err) {
       console.error(err)
@@ -59,6 +59,11 @@ const writeToJSON = rows => {
     }
   })
 }
+
+const parseCategory = category => category === '9+' ||
+  category === '12+' ||
+   category === 'Reference' || 
+   category === 'Finance' ? 'Utilities' : category
 
 const writeToCSV = rows => {
   csvWriter
@@ -92,8 +97,6 @@ Set {
   -'Travel',
   -'Utilities',
   -'Weather',
-  '12+',
-  '9+',
  }
 
 */

@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 import PhoneBackgorund from './components/PhoneBackgorund'
 import utils from './utils'
 import {chunk} from 'lodash'
 import COLORS from './../../constants/colors'
+
+import DataContext from './../../context/context'
 
 const styles = {
     canvasWrapper : {
@@ -16,38 +18,7 @@ const styles = {
 }
 
  const IphoneDisplayer = ({phoneWidth, phoneHeight, backgorundFill}) => {
-
-    const items = [
-     {category: 'earth',
-        number:'33',
-        imgSrc: 'earth.svg',
-        width: '55',
-        height: '55',
-        color: COLORS.ORANGE_2},
-        {category: 'utils',
-        number:'24',
-        imgSrc: 'edit.svg'},
-        {category: 'utils',
-        number:'22',
-        imgSrc: 'feature.svg'},
-        {category: 'dev',
-        number:'1',
-        imgSrc: 'settings.svg',
-        width: '45',
-        height: '45'
-    },
-        {category: 'features',
-        number:'14',
-        imgSrc: 'console.svg',
-        width: '40',
-        height: '40',
-        color: COLORS.RED},
-        {category: 'utils',
-        number:'22',
-        imgSrc: 'earth.svg',
-        color: COLORS.ORANGE},
-    ]
-
+    const {iphoneDisplayerItems} = useContext(DataContext)
     const [canvas, setCanvas] = useState(null)
      
      useEffect(() => {
@@ -58,7 +29,7 @@ const styles = {
         if(canvas) { 
         utils.fillBackbgorund(canvas)
         
-        const chunks = chunk(items, 4)
+        const chunks = chunk(iphoneDisplayerItems, 4)
             chunks.forEach((ch, index ) => {
                 utils.drawRow(canvas, ch,  14, utils.getIconPosYOffset(index))
             })
