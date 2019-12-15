@@ -57,7 +57,12 @@ const drawInnerIcon = (canvas, posX, posY, item) => {
         const IconPosY = posY + 10 * scale
         canvas.drawImage(img,IconPosX,IconPosY, DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT)
     } 
-    img.src=require(`./../../dist/svg/${item.imgSrc}`)
+
+    try {
+        img.src=require(`./../../dist/svg/${item.imgSrc}`)
+    } catch (ex) {
+        img.src=require(`./../../dist/svg/Utilities.svg`)
+    }
 }
 
 export const drawIcon =(canvas, posX, posY, item)  => {

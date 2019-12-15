@@ -50,7 +50,12 @@ const drawInnerIcon = (canvas, posX, posY, item) => {
         const IconPosY = posY - 12 * scale
         canvas.drawImage(img,IconPosX,IconPosY, DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT)
     } 
-    img.src=require(`./../../dist/svg/${item.imgSrc}`)
+    try {
+        img.src=require(`./../../dist/svg/${item.imgSrc}`)
+    }catch {
+        img.src=require(`./../../dist/svg/Utilities.svg`)
+    }
+    
 }
 
 const drawNotification = (canvas, startingX, startingY, item) => {
