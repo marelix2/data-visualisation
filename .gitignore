@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 /node_modules
+/dist
+
+/src/scripts/out.json
+/src/scripts/outIOS.json
+/src/scripts/outAndroid.json
