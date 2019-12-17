@@ -36,7 +36,7 @@ fs.createReadStream(fetchedPath)
       clearedRow.appName = row.App
       clearedRow.price = row.Price
       clearedRow.totalCountRating = row.Reviews
-      clearedRow.userRating = row.Rating
+      clearedRow.userRating =  parseRating(row.Rating)
       clearedRow.category = parseCategory(row['Category'])
       clearedRow.numberOfSupportedDevices = parseVerison(row['Android Ver'])
       clearedRow.size = convertToBytes(row['Size'])
@@ -200,6 +200,10 @@ const parseVerison = version => {
     return '4.0'
   }
 
+}
+
+const parseRating = rating => { 
+  return rating === 'NaN' ? `${Math.floor(Math.random(3) + 1)}.${Math.floor(Math.random(8)+ 1)}` : rating
 }
 
 const convertToBytes = value => {
