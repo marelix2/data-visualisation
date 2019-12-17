@@ -209,9 +209,9 @@ const parseRating = rating => {
 const convertToBytes = value => {
   let converted 
   if( value.includes('M')) {
-    converted =  parseFloat(value.split('M')[0]) * 1000000 + Math.floor(Math.random() * 100000)
+    converted =  parseFloat(value.split('M')[0]) * 1000000 + Math.floor(Math.random(100000))
   }else if(value.includes('k')) {
-    converted = parseFloat(value.split('k')[0]) * 1000 + Math.floor(Math.random() * 100)
+    converted = parseFloat(value.split('k')[0]) * 1000 + Math.floor(Math.random(1000))
   }else {
     converted = 0
   }

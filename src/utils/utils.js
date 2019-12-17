@@ -59,6 +59,21 @@ const getMinAppPrice = (itmes, categories) => {
     })
     return min
 }
+const getMin = (items, category, key) => {
+    let min = 150000000000
+    items.filter(item => item.category === category).forEach(item => {
+        if (min >= parseInt(item[key])) min = parseInt(item[key])
+    })
+    return min
+}
+
+const getMax = (items, category, key) => {
+    let max = 0
+    items.filter(item => item.category === category).forEach(item => {
+        if (max < parseInt(item[key])) max = parseInt(item[key])
+    })
+    return max
+}
 
 const getColorByPrice = (min, max, price) => {
     const firstCentile = (max - min) * 0.25
@@ -73,6 +88,38 @@ const getColorByPrice = (min, max, price) => {
 
 const parseCategoryName = category => `${category.split(' ').join('')}.svg`
 
+const calculateSizeOfOverallIconIOS = (items, category) => {
+    const DEFAULT_WIDTH = 55
+
+    const size = getAverge(items, category, 'size')
+    const min = getMin(items, category, 'size')
+    const max = getMax(items, category, 'size')
+
+    const firstCentile = (max - min) * 0.25
+    const secondCentile = (max - min) * 0.5
+    const trindCentile = (max - min) * 0.75
+
+    if (firstCentile > size) return 44
+    if (firstCentile <= size && secondCentile > size) return 50
+    if (trindCentile <= size ) return  DEFAULT_WIDTH
+}
+
+const calculateSizeOfOverallIconAndroid = (items, category) => {
+    const DEFAULT_RADIUS = 24
+
+    const size = getAverge(items, category, 'size')
+    const min = getMin(items, category, 'size')
+    const max = getMax(items, category, 'size')
+
+    const firstCentile = (max - min) * 0.25
+    const secondCentile = (max - min) * 0.5
+    const trindCentile = (max - min) * 0.75
+
+    if (firstCentile > size) return 20
+    if (firstCentile <= size && secondCentile > size) return DEFAULT_RADIUS
+    if (trindCentile <= size ) return  26
+}
+
 export const getIphoneMainPageItems = (items) => {
     const newItems = getItems(items, 'iOS')
     const categories = getCategories(newItems)
@@ -84,12 +131,15 @@ export const getIphoneMainPageItems = (items) => {
         const supportedDivicesAvg = getSupportedDevicesPercentage(newItems, category, 45)
         const avergeCostOfApp = getAvergeCostOfApp(newItems, category)
         const avergeUserRating = getAverge(newItems, category, 'userRating')
+        const size = calculateSizeOfOverallIconIOS(newItems, category)
         out.push({
             category,
             number: supportedDivicesAvg,
             imgSrc: parseCategoryName(category),
             color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp),
-            rating: avergeUserRating
+            rating: avergeUserRating,
+            width: size,
+            height: size,
         })
     })
 
@@ -108,14 +158,15 @@ export const getAndroidMainPageItems = (items) => {
     categories.forEach(category => {
         const avergeCostOfApp = getAvergeCostOfApp(newItems, category)
         const avergeUserRating = getAverge(newItems, category, 'userRating')
-        console.log(avergeUserRating)
         const supportedDivicesAvg = getSupportedDevicesPercentageAndroid(newItems, category, supportDivicesAndroid)
+        const radius = calculateSizeOfOverallIconAndroid(newItems, category)
         out.push({
             category,
             number: supportedDivicesAvg,
             imgSrc: parseCategoryName(category),
             color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp),
-            rating: avergeUserRating
+            rating: avergeUserRating,
+            radius
         })
     })
     out.sort((a , b) => a.rating - b.rating )
