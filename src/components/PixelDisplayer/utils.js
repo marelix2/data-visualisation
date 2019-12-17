@@ -29,9 +29,9 @@ export const drawIcon =(canvas, posX, posY, item)  => {
 
 const drawCategory = (canvas, startingX, startingY, item) => {
     canvas.fillStyle = COLORS.TEXT_PIXEL
-    canvas.font='9px'
+    canvas.font = "8px Arial"
     canvas.textAlign = 'center'
-    canvas.fillText(capitalize(item.category),  startingX, startingY + 50)
+    canvas.fillText(capitalize(item.category),  startingX, startingY + 45)
 }
 
 export const drawRow = (canvas, items, posX, posY) => {
@@ -65,7 +65,7 @@ const drawNotification = (canvas, startingX, startingY, item) => {
     canvas.fillStyle = COLORS.NOTIFY_ICON_COLOR
     canvas.fillRect( startingX - 25, startingY - 25, notificationWidth, notificationHeight)
     canvas.fillStyle = COLORS.TEXT_IPHONE
-    canvas.font='7px'
+    canvas.font = "9px Arial"
     canvas.textAlign = 'center'
     canvas.fillText(capitalize(item.number || 0), startingX -19 ,startingY - notificationHeight/0.8)
     }

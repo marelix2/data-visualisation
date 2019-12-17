@@ -34,9 +34,12 @@ const getSupportedDevicesPercentageAndroid = (items, category,supportDivicesAndr
     return Math.floor(androidKeys.reduce( (result, key) => result + supportDivicesAndroid[key], 0))
 }
 
-const getAvergeCostOfApp = (items, category, supportedVersions) => {
+
+const getAvergeCostOfApp = (items, category) => Math.floor(getAverge(items, category, 'price'))
+
+const getAverge = (items, category, key) => {
     const categoryItems = items.filter(item => item.category === category)
-    return Math.floor(categoryItems.reduce((acc, { price }) => acc + parseFloat(price), 0) / categoryItems.length)
+    return categoryItems.reduce((acc, item) => acc + parseFloat(item[key]), 0) / categoryItems.length
 }
 
 const getMaxAppPrice = (itmes, categories) => {
@@ -80,13 +83,17 @@ export const getIphoneMainPageItems = (items) => {
     categories.forEach(category => {
         const supportedDivicesAvg = getSupportedDevicesPercentage(newItems, category, 45)
         const avergeCostOfApp = getAvergeCostOfApp(newItems, category)
+        const avergeUserRating = getAverge(newItems, category, 'userRating')
         out.push({
             category,
             number: supportedDivicesAvg,
             imgSrc: parseCategoryName(category),
-            color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp)
+            color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp),
+            rating: avergeUserRating
         })
     })
+
+    out.sort((a , b) => a.rating - b.rating )
 
     return out
 }
@@ -100,15 +107,18 @@ export const getAndroidMainPageItems = (items) => {
     const minPrice = getMaxAppPrice(newItems, categories)
     categories.forEach(category => {
         const avergeCostOfApp = getAvergeCostOfApp(newItems, category)
+        const avergeUserRating = getAverge(newItems, category, 'userRating')
+        console.log(avergeUserRating)
         const supportedDivicesAvg = getSupportedDevicesPercentageAndroid(newItems, category, supportDivicesAndroid)
         out.push({
             category,
             number: supportedDivicesAvg,
             imgSrc: parseCategoryName(category),
-            color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp)
+            color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp),
+            rating: avergeUserRating
         })
     })
-
+    out.sort((a , b) => a.rating - b.rating )
     return out
 }
 
