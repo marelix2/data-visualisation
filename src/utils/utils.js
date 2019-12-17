@@ -12,7 +12,7 @@ const getSupportedDevicesPercentage = (items, category, maxValue) => {
     return Math.floor(avg / maxValue * 100)
 }
 
-const getSupportedDevicesPercentageAndroid = (items, category,supportDivicesAndroid) => {
+const getSupportedDevicesPercentageAndroid = (items, category, supportDivicesAndroid) => {
     let supportedDevices = items.filter(item => item.category === category).map(d => d.numberOfSupportedDevices).sort((a, b) => a - b)
     const occurances = {}
     supportedDevices.forEach(a => {
@@ -24,14 +24,14 @@ const getSupportedDevicesPercentageAndroid = (items, category,supportDivicesAndr
     let mostPopularVersion
 
     keys.forEach(key => {
-        if (max < occurances[key]){
+        if (max < occurances[key]) {
             max = occurances[key]
             mostPopularVersion = key
-        } 
+        }
     })
     let androidKeys = Object.keys(supportDivicesAndroid)
     androidKeys = androidKeys.slice(androidKeys.indexOf(mostPopularVersion))
-    return Math.floor(androidKeys.reduce( (result, key) => result + supportDivicesAndroid[key], 0))
+    return Math.floor(androidKeys.reduce((result, key) => result + supportDivicesAndroid[key], 0))
 }
 
 
@@ -42,48 +42,18 @@ const getAverge = (items, category, key) => {
     return categoryItems.reduce((acc, item) => acc + parseFloat(item[key]), 0) / categoryItems.length
 }
 
-const getMaxAppPrice = (itmes, categories) => {
-    let max = 0
-    categories.forEach(category => {
-        const avergeCostOfApp = getAvergeCostOfApp(itmes, category)
-        if (max < avergeCostOfApp) max = avergeCostOfApp
-    })
-    return max
-}
+const getColorByPrice = (items, category, price) => {
+    const i = items.filter(item => item.category === category).map(item => item.price).sort((a, b) => a - b)
+    const firstCentile = parseFloat(i[Math.floor(i.length * 0.25)])
+    const secondCentile = parseFloat(i[Math.floor(i.length * 0.5)])
+    const trindCentile = parseFloat(i[Math.floor(i.length * 0.75)])
 
-const getMinAppPrice = (itmes, categories) => {
-    let min = 0
-    categories.forEach(category => {
-        const avergeCostOfApp = getAvergeCostOfApp(itmes, category)
-        if (min >= avergeCostOfApp) min = avergeCostOfApp
-    })
-    return min
-}
-const getMin = (items, category, key) => {
-    let min = 150000000000
-    items.filter(item => item.category === category).forEach(item => {
-        if (min >= parseInt(item[key])) min = parseInt(item[key])
-    })
-    return min
-}
 
-const getMax = (items, category, key) => {
-    let max = 0
-    items.filter(item => item.category === category).forEach(item => {
-        if (max < parseInt(item[key])) max = parseInt(item[key])
-    })
-    return max
-}
-
-const getColorByPrice = (min, max, price) => {
-    const firstCentile = (max - min) * 0.25
-    const secondCentile = (max - min) * 0.5
-    const trindCentile = (max - min) * 0.75
-
-    if (firstCentile > price) return COLORS.GREEN
+    if (firstCentile >= price) return COLORS.GREEN
     if (firstCentile <= price && secondCentile > price) return COLORS.YELLOW
     if (secondCentile <= price && trindCentile > price) return COLORS.ORANGE
-    if (trindCentile <= price) return COLORS.RED
+
+    return COLORS.RED
 }
 
 const parseCategoryName = category => `${category.split(' ').join('')}.svg`
@@ -92,32 +62,57 @@ const calculateSizeOfOverallIconIOS = (items, category) => {
     const DEFAULT_WIDTH = 55
 
     const size = getAverge(items, category, 'size')
-    const min = getMin(items, category, 'size')
-    const max = getMax(items, category, 'size')
+    const i = items.filter(item => item.category === category).map(item => item.size).sort((a, b) => a - b)
 
-    const firstCentile = (max - min) * 0.25
-    const secondCentile = (max - min) * 0.5
-    const trindCentile = (max - min) * 0.75
+    const firstCentile = i[Math.floor(i.length * 0.25)]
+    const secondCentile = i[Math.floor(i.length * 0.5)]
+    const trindCentile = i[Math.floor(i.length * 0.75)]
 
     if (firstCentile > size) return 44
     if (firstCentile <= size && secondCentile > size) return 50
-    if (trindCentile <= size ) return  DEFAULT_WIDTH
+
+    return DEFAULT_WIDTH
+}
+
+const calculateSizeOfInnerIconIOS = (items, category) => {
+    const totalRating = getAverge(items, category, 'totalCountRating')
+    const i = items.filter(item => item.category === category).map(item => item.totalCountRating).sort((a, b) => a - b)
+
+    const firstCentile = i[Math.floor(i.length * 0.25)]
+    const secondCentile = i[Math.floor(i.length * 0.5)]
+    const trindCentile = i[Math.floor(i.length * 0.75)]
+
+    if (firstCentile > totalRating) return 24
+    if (firstCentile <= totalRating && secondCentile > totalRating) return 30
+    return 35
 }
 
 const calculateSizeOfOverallIconAndroid = (items, category) => {
     const DEFAULT_RADIUS = 24
 
     const size = getAverge(items, category, 'size')
-    const min = getMin(items, category, 'size')
-    const max = getMax(items, category, 'size')
+    const i = items.filter(item => item.category === category).map(item => item.size).sort((a, b) => a - b)
 
-    const firstCentile = (max - min) * 0.25
-    const secondCentile = (max - min) * 0.5
-    const trindCentile = (max - min) * 0.75
+    const firstCentile = i[Math.floor(i.length * 0.25)]
+    const secondCentile = i[Math.floor(i.length * 0.5)]
+    const trindCentile = i[Math.floor(i.length * 0.75)]
 
-    if (firstCentile > size) return 20
+    if (firstCentile >= size) return 10
     if (firstCentile <= size && secondCentile > size) return DEFAULT_RADIUS
-    if (trindCentile <= size ) return  26
+    return 26
+}
+
+const calculateSizeOfInnerIconAndroid = (items, category) => {
+    const totalRating = getAverge(items, category, 'totalCountRating')
+    const i = items.filter(item => item.category === category).map(item => item.totalCountRating).sort((a, b) => a - b)
+
+    const firstCentile = i[Math.floor(i.length * 0.25)]
+    const secondCentile = i[Math.floor(i.length * 0.5)]
+    const trindCentile = i[Math.floor(i.length * 0.75)]
+
+    if (firstCentile > totalRating) return 15
+    if (firstCentile <= totalRating && secondCentile > totalRating) return 20
+    return 25
 }
 
 export const getIphoneMainPageItems = (items) => {
@@ -125,25 +120,27 @@ export const getIphoneMainPageItems = (items) => {
     const categories = getCategories(newItems)
     const out = []
 
-    const maxPrice = getMaxAppPrice(newItems, categories)
-    const minPrice = getMinAppPrice(newItems, categories)
     categories.forEach(category => {
         const supportedDivicesAvg = getSupportedDevicesPercentage(newItems, category, 45)
         const avergeCostOfApp = getAvergeCostOfApp(newItems, category)
         const avergeUserRating = getAverge(newItems, category, 'userRating')
         const size = calculateSizeOfOverallIconIOS(newItems, category)
+        const iconSize = calculateSizeOfInnerIconIOS(newItems, category)
+
         out.push({
             category,
             number: supportedDivicesAvg,
             imgSrc: parseCategoryName(category),
-            color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp),
+            color: getColorByPrice(newItems, category, avergeCostOfApp),
             rating: avergeUserRating,
             width: size,
             height: size,
+            iconWidth: iconSize,
+            iconHeight: iconSize,
         })
     })
 
-    out.sort((a , b) => a.rating - b.rating )
+    out.sort((a, b) => a.rating - b.rating)
 
     return out
 }
@@ -153,23 +150,24 @@ export const getAndroidMainPageItems = (items) => {
     const categories = getCategories(newItems)
     const out = []
 
-    const maxPrice = getMaxAppPrice(newItems, categories)
-    const minPrice = getMaxAppPrice(newItems, categories)
     categories.forEach(category => {
         const avergeCostOfApp = getAvergeCostOfApp(newItems, category)
         const avergeUserRating = getAverge(newItems, category, 'userRating')
         const supportedDivicesAvg = getSupportedDevicesPercentageAndroid(newItems, category, supportDivicesAndroid)
         const radius = calculateSizeOfOverallIconAndroid(newItems, category)
+        const iconSize = calculateSizeOfInnerIconAndroid(newItems, category)
         out.push({
             category,
             number: supportedDivicesAvg,
             imgSrc: parseCategoryName(category),
-            color: getColorByPrice(minPrice, maxPrice, avergeCostOfApp),
+            color: getColorByPrice(newItems, category, avergeCostOfApp),
             rating: avergeUserRating,
-            radius
+            radius,
+            iconWidth: iconSize,
+            iconHeight: iconSize,
         })
     })
-    out.sort((a , b) => a.rating - b.rating )
+    out.sort((a, b) => a.rating - b.rating)
     return out
 }
 

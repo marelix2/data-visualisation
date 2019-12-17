@@ -40,15 +40,17 @@ export const drawRow = (canvas, items, posX, posY) => {
 
 const drawInnerIcon = (canvas, posX, posY, item) => {
     canvas.fillStyle = DEFAULT_ICON_COLOR
+    const width = item.iconWidth || DEFAULT_ICON_WIDTH
+    const height = item.iconHeight || DEFAULT_ICON_HEIGHT
     const img = new Image()
     const scale = item.radius && item.radius !== DEFAULT_RADIUS.toString() ?  (item.radius / (DEFAULT_RADIUS - 3) )  : 1
  
     img.width= 150 * scale
    
     img.onload = () => {
-        const IconPosX = posX - 13 * scale
-        const IconPosY = posY - 12 * scale
-        canvas.drawImage(img,IconPosX,IconPosY, DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT)
+        const IconPosX = posX - 10 * scale
+        const IconPosY = posY - 10 * scale
+         canvas.drawImage(img,IconPosX ,IconPosY, width, height)
     } 
     try {
         img.src=require(`./../../dist/svg/${item.imgSrc}`)

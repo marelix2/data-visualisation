@@ -46,16 +46,18 @@ const drawCategory = (canvas, startingX, startingY, item) => {
 }
 
 const drawInnerIcon = (canvas, posX, posY, item) => {
+
+    const width = item.iconWidth || DEFAULT_ICON_WIDTH
+    const height = item.iconHeight || DEFAULT_ICON_HEIGHT
+
     canvas.fillStyle = DEFAULT_ICON_COLOR
     const img = new Image()
     const scale = item.width && item.width !== DEFAULT_WIDTH.toString() ?  (item.width / (DEFAULT_WIDTH + 40) )  : 1
- 
     img.width= 150 * scale
-   
     img.onload = () => {
-        const IconPosX = posX + 10 * scale
-        const IconPosY = posY + 10 * scale
-        canvas.drawImage(img,IconPosX,IconPosY, DEFAULT_ICON_WIDTH, DEFAULT_ICON_HEIGHT)
+        const IconPosX = item.width * scale / 2 + posX -6
+        const IconPosY = item.height * scale / 2 + posY  -6
+        canvas.drawImage(img,IconPosX ,IconPosY, width, height)
     } 
 
     try {
