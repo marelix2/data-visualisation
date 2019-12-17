@@ -38,16 +38,14 @@ fs.createReadStream(fetchedPath)
       clearedRow.totalCountRating = row.Reviews
       clearedRow.userRating = row.Rating
       clearedRow.category = parseCategory(row['Category'])
-      clearedRow.numberOfSupportedDevices = row['Android Ver']
+      clearedRow.numberOfSupportedDevices = parseVerison(row['Android Ver'])
       clearedRow.size = convertToBytes(row['Size'])
 
       categories.push(row['Category'])
-
       correctRows.push(clearedRow)
     }
     catch (err) {
       console.error(err)
-
     }
   })
   .on('end', () => {
@@ -178,6 +176,30 @@ const parseCategory = option => {
       return 'Medical'
 
   }
+}
+
+const parseVerison = version => {
+  if(version) {
+    if(version.includes('Varies with device')) return '4.0'
+    if(version.includes('1.')|| version.includes('2.') || version.includes('3.') ) return '2.3'
+    if(version.includes('4.0')) return '4.0'
+    if(version.includes('4.1')) return '4.1'
+    if(version.includes('4.2')) return '4.2'
+    if(version.includes('4.3')) return '4.3'
+    if(version.includes('4.4')) return '4.4'
+    if(version.includes('5.0')) return '5.0'
+    if(version.includes('5.1')) return '5.1'
+    if(version.includes('6.0')) return '6.0'
+    if(version.includes('7.0')) return '7.0'
+    if(version.includes('7.1')) return '7.1'
+    if(version.includes('8.0')) return '8.0'
+    if(version.includes('8.1')) return '8.1'
+    if(version.includes('9.0')) return '9.0'
+  }
+  else {
+    return '4.0'
+  }
+
 }
 
 const convertToBytes = value => {
